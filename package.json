@@ -2,6 +2,7 @@
   "name": "ithillel-shared-playwright-hw",
   "version": "1.0.0",
   "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui",
@@ -11,17 +12,18 @@
     "type": "git",
     "url": "git+https://github.com/tlavrenko1/ithillel-shared-playwright-hw.git"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tlavrenko1/ithillel-shared-playwright-hw/issues"
-  },
-  "homepage": "https://github.com/tlavrenko1/ithillel-shared-playwright-hw#readme",
-  "devDependencies": {
-    "@playwright/test": "^1.44.1"
-  },
+  "type": "module",
   "dependencies": {
+    "playwright": "^1.44.1"
+
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^22.2.0",
     "prompt-sync": "^4.2.0"
   }
 }
