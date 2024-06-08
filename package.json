@@ -16,14 +16,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "playwright": "^1.44.1"
 
   },
   "devDependencies": {
     "@playwright/test": "^1.44.1",
-    "@types/node": "^22.2.0",
     "prompt-sync": "^4.2.0"
   }
 }
