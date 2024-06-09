@@ -27,4 +27,6 @@ export class RegisterForm extends BasePage {
         await this.textInput(this.locators.passwordConfirmation, passwordConfirmation);
     }
 
+    
+
 }

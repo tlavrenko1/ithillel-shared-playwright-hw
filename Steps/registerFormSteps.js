@@ -30,127 +30,126 @@ export class RegisterFormSteps {
         await this.page.goto('/');
     }
 
-    async sucessfulRegistration() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
+    async validateInputs(errorMessage) {
+        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
+        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
+        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
+        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText(errorMessage);
+    }
+
+    async registerUser(user) {
         await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, randomEmail, password, password);
+        await this.registerForm.register(user.name, user.lastName, user.email, user.password, user.passwordConfirmation);
+    }
+
+    buildUser({
+        name,
+        lastName,
+        email,
+        password,
+        passwordConfirmation
+    } = {}) {
+        password = this.getValueOrDefault(password, UniquePass.generatePassword());
+        return {
+            name: this.getValueOrDefault(name, user.name),
+            lastName: this.getValueOrDefault(lastName, user.lastName),
+            email: this.getValueOrDefault(email, EmailHelper.generateUniqueEmail()),
+            password: password,
+            passwordConfirmation: this.getValueOrDefault(passwordConfirmation, password)
+        };
+    }
+
+    getValueOrDefault(value, defaultValue) {
+        return (value === null || value === undefined) ? defaultValue : value;
+    }
+
+    async sucessfulRegistration() {
+        let user = this.buildUser();
+        await this.registerUser(user);
         await this.registerForm.click(this.registerForm.locators.registerBtn);
         await expect(this.page).toHaveURL('/panel/garage');
         await this.basePage.logOut();
     };
 
     async createUserWithEmptyName() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register('', user.lastName, randomEmail, password, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Name required');
+        let user = this.buildUser({
+            name: ''
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Name required');
     }
 
     async createUserWithLessThan2CharactersName() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register('T', user.lastName, randomEmail, password, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Name has to be from 2 to 20 characters long');
+        let user = this.buildUser({
+            name: 'T'
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Name has to be from 2 to 20 characters long');
     }
 
     async createUserWithEmptyLastName() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, '', randomEmail, password, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Last name required');
+        let user = this.buildUser({
+            lastName: ''
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Last name required');
     }
 
     async createUserWithLessThat2ChactersInLastName() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, 'T', randomEmail, password, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Last name has to be from 2 to 20 characters long');
+        let user = this.buildUser({
+            lastName: 'T'
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Last name has to be from 2 to 20 characters long');
     }
 
     async createUserWithInvalidEmail() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        let invalidEmail = randomEmail.replace('@', '');
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, invalidEmail, password, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Email is incorrect');
+        let user = this.buildUser({
+            email: "test.com"
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Email is incorrect');
     }
 
     async createUserWithEmptyEmail() {
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, '', password, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Email required');
+        let user = this.buildUser({
+            email: ""
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Email required');
     }
 
     async createUserWithEmptyPassword() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, randomEmail, '', password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Password required');
+        let user = this.buildUser({
+            password: ""
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Password required');
     }
 
     async createUserWithInvalidPassword() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        let incorrectPass = password.slice(0, 5);
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, randomEmail, incorrectPass, password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
+        let user = this.buildUser({
+            password: "12345"
+        });
+        await this.registerUser(user);
+        await this.validateInputs('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
     }
 
     async createUserWithEmptyConfirmationPassword() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, randomEmail, password, '');
-        await this.registerForm.click(this.registerForm.locators.passwordConfirmation);
+        let user = this.buildUser({
+            passwordConfirmation: ""
+        });
+        await this.registerUser(user);
         await this.registerForm.click(this.registerForm.locators.password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Re-enter password required');
+        await this.validateInputs('Re-enter password required');
     }
 
     async createUserWithInvalidConfirmationPassword() {
-        let randomEmail = EmailHelper.generateUniqueEmail();
-        let password = UniquePass.generatePassword();
-        let incorrectPass = password.slice(0, 5);
-        await this.registerForm.click(this.registerForm.locators.signUpBtn);
-        await this.registerForm.register(user.name, user.lastName, randomEmail, password, incorrectPass);
+        let user = this.buildUser({
+            passwordConfirmation: "12345"
+        });
+        await this.registerUser(user);
         await this.registerForm.click(this.registerForm.locators.password);
-        await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
-        await expect(this.page.locator(this.registerForm.locators.errorInputBorder)).toHaveCSS('border-color', 'rgb(220, 53, 69)');
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toBeVisible();
-        await expect(this.page.locator(this.registerForm.locators.missedDataInField)).toHaveText('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
+        await this.validateInputs('Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter');
     }
 }
