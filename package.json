@@ -12,13 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/tlavrenko1/ithillel-shared-playwright-hw.git"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "playwright": "^1.44.1"
-
   },
   "devDependencies": {
     "@playwright/test": "^1.44.1",

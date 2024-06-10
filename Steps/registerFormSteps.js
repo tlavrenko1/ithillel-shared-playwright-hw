@@ -18,6 +18,7 @@ import {
 } from '../pages/basePage';
 
 
+
 export class RegisterFormSteps {
 
     constructor(page) {

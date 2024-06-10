@@ -3,7 +3,9 @@ import {
   defineConfig,
   devices
 } from '@playwright/test';
-//const { defineConfig, devices } = require('@playwright/test');
+require('dotenv').config({
+  path: `.env.${process.env.ENV || 'stage'}`
+})
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -20,10 +22,10 @@ module.exports = defineConfig({
   //turn off test that were marked this way
   //grepInvert: /@smoke/,
   use: {
-    baseURL: 'https://qauto2.forstudy.space/',
+    baseURL: process.env.BASE_URL,
     httpCredentials: {
-      username: 'guest',
-      password: 'welcome2qauto',
+      username: process.env.HTTP_CREDENTIALS_USERNAME ,
+      password: process.env.HTTP_CREDENTIALS_PASSWORD || '',
     },
     trace: 'on-first-retry',
     viewport: {
