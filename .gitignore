@@ -5,9 +5,6 @@ node_modules/
 *.log
 npm-debug.log*
 
-# Ignore environment-specific files
-.env
-
 # Ignore package-lock.json
 package-lock.json
 
@@ -66,6 +63,4 @@ Thumbs.db
 # Ignore lock files
 package-lock.json
 yarn.lock
-.env
-.env.local
 
