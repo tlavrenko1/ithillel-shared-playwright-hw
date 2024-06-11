@@ -1,4 +1,3 @@
-// @ts-check
 import {
   defineConfig,
   devices
@@ -24,8 +23,8 @@ module.exports = defineConfig({
   use: {
     baseURL: process.env.BASE_URL,
     httpCredentials: {
-      username: process.env.HTTP_CREDENTIALS_USERNAME ,
-      password: process.env.HTTP_CREDENTIALS_PASSWORD || '',
+      username: process.env.HTTP_CREDENTIALS_USERNAME,
+      password: process.env.HTTP_CREDENTIALS_PASSWORD,
     },
     trace: 'on-first-retry',
     viewport: {
