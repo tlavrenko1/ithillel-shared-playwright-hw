@@ -24,7 +24,7 @@ npm install
 
 npx playwright install
 
-<!--or specific browser, e.g., chromium:-->
+or specific browser, e.g., chromium:
 
 npx playwright install chromium
 
@@ -32,7 +32,7 @@ npx playwright install chromium
 
 cp .env.example .env
 
-<!--Edit the .env file and fill in the necessary values (e.g., BASE_URL, HTTP_CREDENTIALS_USERNAME, HTTP_CREDENTIALS_PASSWORD)-->
+Edit the .env file and fill in the necessary values (e.g., BASE_URL, HTTP_CREDENTIALS_USERNAME, HTTP_CREDENTIALS_PASSWORD)
 
 5. **Run tests**
 
