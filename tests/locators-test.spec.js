@@ -11,7 +11,6 @@ import {
 test.describe('New user registration', () => {
     let registerFormSteps;
     let page;
-    let browser;
     test.beforeAll(async ({
         browser
     }) => {

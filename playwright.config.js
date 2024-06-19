@@ -3,7 +3,7 @@ import {
   devices
 } from '@playwright/test';
 require('dotenv').config({
-  path: `.env.${process.env.ENV || 'stage'}`
+  path: `.env.${process.env.ENV}`
 })
 
 /**
@@ -33,20 +33,24 @@ module.exports = defineConfig({
     },
     screenshot: 'only-on-failure',
   },
-  //globalSetup: './globalSetup',
+
+  globalSetup: require.resolve('./globalSetup'),
+  use: {
+    storageState: 'storageState.json',
+  },
   //globalTeardown: './globalTeardown',
 
   /* Configure projects for major browsers */
   projects: [{
-      name: 'stage',
-      use: {
-        baseURL: 'https://qauto2.forstudy.space/',
-        httpCredentials: {
-          username: 'guest',
-          password: 'welcome2qauto',
-        },
-        ...devices['Desktop Chrome']
+    name: 'stage',
+    use: {
+      baseURL: process.env.BASE_URL,
+      httpCredentials: {
+        username: process.env.HTTP_CREDENTIALS_USERNAME,
+        password: process.env.HTTP_CREDENTIALS_PASSWORD,
       },
+      ...devices['Desktop Chrome']
     },
-  ],
+  }, ],
+
 });
