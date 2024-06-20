@@ -2,14 +2,15 @@ import {
   defineConfig,
   devices
 } from '@playwright/test';
-require('dotenv').config({
-  path: `.env.${process.env.ENV || 'stage'}`
-})
+import dotenv from 'dotenv';
+dotenv.config({});
+
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
-module.exports = defineConfig({
+export default defineConfig({
+  setStorageState: './setup',
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -22,6 +23,8 @@ module.exports = defineConfig({
   //grepInvert: /@smoke/,
   use: {
     baseURL: process.env.BASE_URL,
+    storageState: 'storageState.json',
+  
     httpCredentials: {
       username: process.env.HTTP_CREDENTIALS_USERNAME,
       password: process.env.HTTP_CREDENTIALS_PASSWORD,
@@ -33,20 +36,18 @@ module.exports = defineConfig({
     },
     screenshot: 'only-on-failure',
   },
-  //globalSetup: './globalSetup',
-  //globalTeardown: './globalTeardown',
-
   /* Configure projects for major browsers */
   projects: [{
-      name: 'stage',
-      use: {
-        baseURL: 'https://qauto2.forstudy.space/',
-        httpCredentials: {
-          username: 'guest',
-          password: 'welcome2qauto',
-        },
-        ...devices['Desktop Chrome']
+    name: 'setup',
+    use: {
+      storageState: 'storageState.json',
+      baseURL: process.env.BASE_URL,
+      httpCredentials: {
+        username: process.env.HTTP_CREDENTIALS_USERNAME,
+        password: process.env.HTTP_CREDENTIALS_PASSWORD,
       },
+      ...devices['Desktop Chrome'],
     },
-  ],
+  }, ],
+
 });
