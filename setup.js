@@ -1,31 +1,34 @@
 import {
     chromium
 } from '@playwright/test';
-import {user} from './fixtures/user.js';
-require('dotenv').config({
-    path: `.env.${process.env.ENV}`
-  })
+import {
+    existedUser
+} from './fixtures/user.js';
+import dotenv from 'dotenv';
+dotenv.config({});
 
-
-(async () => {
-    const browser = await chromium.launch();
+export const setStorageState = async () => {
+    const browser = await chromium.launch({headless: false});
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    // Navigate to the login page and perform login actions
-    await page.goto('/'); // Replace with your actual login URL
+    try {
+        await page.goto('https://guest:welcome2qauto@qauto2.forstudy.space/');
+            await page.click(`.btn.btn-outline-white.header_signin`);
+            await page.fill('#signinEmail', userGaragePage.email);
+            await page.fill('#signinPassword', userGaragePage.password);
+            await page.click(`button[class='btn btn-primary']`);
+            await page.waitForURL('https://qauto2.forstudy.space/panel/garage');
 
-    await page.fill('input[name="username"]', user.email);
-    await page.fill('input[name="password"]', user.password);
-    await page.click('button[type="submit"]'); // Replace with your actual login button selector
+        // Save storage state
+        await context.storageState({ path: 'storageState.json' });
+        console.log('Storage state saved to storageState.json');
+    } catch (error) {
+        console.error('Error during login or saving storage state:', error);
+    } finally {
+        await browser.close();
+        console.log('Browser closed');
+    }
+};
 
-    // Wait for navigation or some page element indicating a successful login
-    await page.waitForURL('/garage');
-
-    // Save storage state into a file
-    await context.storageState({
-        path: 'storageState.json'
-    });
-
-    await browser.close();
-})();
+setStorageState();
