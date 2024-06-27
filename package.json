@@ -20,7 +20,7 @@
     "playwright": "^1.44.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.45.0",
     "prompt-sync": "^4.2.0"
   }
 }
