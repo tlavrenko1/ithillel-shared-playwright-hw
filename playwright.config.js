@@ -3,7 +3,6 @@ import {
   devices
 } from '@playwright/test';
 require('dotenv').config({
-  path: `.env.${process.env.ENV || 'stage'}`
 })
 
 /**
@@ -40,10 +39,10 @@ module.exports = defineConfig({
   projects: [{
       name: 'stage',
       use: {
-        baseURL: 'https://qauto2.forstudy.space/',
+        baseURL: process.env.BASE_URL,
         httpCredentials: {
-          username: 'guest',
-          password: 'welcome2qauto',
+          username: process.env.HTTP_CREDENTIALS_USERNAME,
+          password: process.env.HTTP_CREDENTIALS_PASSWORD,
         },
         ...devices['Desktop Chrome']
       },
