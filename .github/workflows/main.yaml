@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  cypress-run:
+  playwright-run:
     runs-on: ubuntu-latest
 
     steps:
