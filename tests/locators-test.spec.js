@@ -5,7 +5,7 @@ import {
 } from '@playwright/test';
 import {
     RegisterFormSteps
-} from '../steps/registerFormSteps';
+} from '../Steps/registerFormSteps';
 import {
     basePage
 } from '../pages/basePage';
@@ -14,7 +14,7 @@ import {
 } from '../fixtures/carData';
 import {
     utils
-} from '../steps/api-utils';
+} from '../Steps/api-utils';
 
 const newData = {
     name: 'MyTest',

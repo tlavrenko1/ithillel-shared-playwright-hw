@@ -12,7 +12,7 @@ import {
 } from '../helpers/uniquePass';
 import {
     RegisterForm
-} from '../objects/registerForm';
+} from '../Objects/registerForm';
 import {
     BasePage
 } from '../pages/basePage';
