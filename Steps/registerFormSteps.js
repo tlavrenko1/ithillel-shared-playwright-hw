@@ -28,7 +28,7 @@ export class RegisterFormSteps {
     }
 
     async openMainPage() {
-        await this.page.goto('');
+        await this.page.goto('/');
     } 
 
     async validateInputs(errorMessage) {
