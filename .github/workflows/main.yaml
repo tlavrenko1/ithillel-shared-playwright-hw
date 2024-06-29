@@ -34,14 +34,14 @@ jobs:
         tags: lavrenkot/playwright-build-tests:latest
     - name: Display Docker run variables
       run: |
-          echo "BASE_URL=$BASE_URL"
+          echo "BASE_URL=${{secrets.BASE_URL}}"
           echo "HTTP_CREDENTIALS_USERNAME=$HTTP_CREDENTIALS_USERNAME"
           echo "HTTP_CREDENTIALS_PASSWORD=$HTTP_CREDENTIALS_PASSWORD"
 
     - name: Run Playwright tests in Docker
       run: |
           docker run --rm \
-            -e BASE_URL="$BASE_URL" \
-            -e HTTP_CREDENTIALS_USERNAME="$HTTP_CREDENTIALS_USERNAME" \
-            -e HTTP_CREDENTIALS_PASSWORD="$HTTP_CREDENTIALS_PASSWORD" \
+            -e BASE_URL="https://qauto.forstudy.space/" \
+            -e HTTP_CREDENTIALS_USERNAME="guest" \
+            -e HTTP_CREDENTIALS_PASSWORD="welcome2qauto" \
             lavrenkot/playwright-build-tests:latest
