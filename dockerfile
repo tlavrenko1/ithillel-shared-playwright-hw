@@ -1,6 +1,11 @@
 # Use the official Node.js image as the base image
 FROM mcr.microsoft.com/playwright:v1.45.0-jammy 
 
+# Set default values for environment variables
+ENV BASE_URL=""
+ENV HTTP_CREDENTIALS_USERNAME=""
+ENV HTTP_CREDENTIALS_PASSWORD=""
+
 # Set the working directory
 WORKDIR /e2e
 
