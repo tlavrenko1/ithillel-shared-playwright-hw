@@ -33,5 +33,5 @@ jobs:
         push: true
         tags: lavrenkot/playwright-build-tests:latest
 
-    - name: Run Cypress tests in Docker
+    - name: Run Playwright tests in Docker
       run: docker run --rm lavrenkot/playwright-build-tests:latest
