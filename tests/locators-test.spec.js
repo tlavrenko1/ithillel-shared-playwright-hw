@@ -49,11 +49,13 @@ test.describe('New user registration', () => {
     test.beforeAll(async ({
         browser
     }) => {
+        console.log(process.env.BASE_URL);
         const context = await browser.newContext({
             viewport: {
                 width: 1920,
                 height: 1080
             },
+            baseURL: process.env.BASE_URL
         });
         page = await context.newPage();
         registerFormSteps = new RegisterFormSteps(page);
