@@ -34,9 +34,9 @@ jobs:
         tags: lavrenkot/playwright-build-tests:latest
     - name: Display Docker run variables
       run: |
-          echo "BASE_URL=${{secrets.BASE_URL}}"
-          echo "HTTP_CREDENTIALS_USERNAME=$HTTP_CREDENTIALS_USERNAME"
-          echo "HTTP_CREDENTIALS_PASSWORD=$HTTP_CREDENTIALS_PASSWORD"
+          echo "BASE_URL=${BASE_URL}"
+          echo "HTTP_CREDENTIALS_USERNAME=${HTTP_CREDENTIALS_USERNAME}"
+          echo "HTTP_CREDENTIALS_PASSWORD=${HTTP_CREDENTIALS_PASSWORD}"
 
     - name: Run Playwright tests in Docker
       run: |
