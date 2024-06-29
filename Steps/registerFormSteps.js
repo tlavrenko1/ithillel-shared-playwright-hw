@@ -12,7 +12,7 @@ import {
 } from '../helpers/uniquePass';
 import {
     RegisterForm
-} from '../objects/registerForm';
+} from '../Objects/registerForm';
 import {
     BasePage
 } from '../pages/basePage';
@@ -29,7 +29,7 @@ export class RegisterFormSteps {
 
     async openMainPage() {
         await this.page.goto('/');
-    }
+    } 
 
     async validateInputs(errorMessage) {
         await expect(this.page.locator(this.registerForm.locators.registerBtn)).toBeDisabled();
@@ -39,6 +39,7 @@ export class RegisterFormSteps {
     }
 
     async registerUser(user) {
+
         await this.registerForm.click(this.registerForm.locators.signUpBtn);
         await this.registerForm.register(user.name, user.lastName, user.email, user.password, user.passwordConfirmation);
     }
@@ -69,7 +70,7 @@ export class RegisterFormSteps {
         await this.registerUser(user);
         await this.registerForm.click(this.registerForm.locators.registerBtn);
         await expect(this.page).toHaveURL('/panel/garage');
-        await this.basePage.logOut();
+        return user;
     };
 
     async createUserWithEmptyName() {

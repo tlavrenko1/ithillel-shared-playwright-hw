@@ -1,106 +1,112 @@
 import {
     test,
-    expect
+    expect,
+    request
 } from '@playwright/test';
 import {
     RegisterFormSteps
-} from '../steps/registerFormSteps';
+} from '../Steps/registerFormSteps';
+import {
+    basePage
+} from '../pages/basePage';
+import {
+    carData
+} from '../fixtures/carData';
+import {
+    utils
+} from '../Steps/api-utils';
 
+const newData = {
+    name: 'MyTest',
+    lastName: 'IsWorking',
+};
 
 
 test.describe('New user registration', () => {
+
     let registerFormSteps;
     let page;
-    let browser;
+    let apiContext;
+    let createdUser;
+    const randomCar = basePage.getRandomCar(carData);
+    let randomCarObj = {
+        carBrandId: randomCar.brand,
+        carModelId: randomCar.model,
+        mileage: 100
+    }
+    let randomInvalidCar = {
+        carModelId: randomCar.model,
+        mileage: 100
+    }
+
+    let randomCarWithInvalidMileage = {
+        carBrandId: randomCar.brand,
+        carModelId: randomCar.model,
+        mileage: -1
+    }
+
+
     test.beforeAll(async ({
         browser
     }) => {
+        console.log(process.env.BASE_URL);
         const context = await browser.newContext({
             viewport: {
                 width: 1920,
                 height: 1080
             },
+            baseURL: process.env.BASE_URL
         });
         page = await context.newPage();
         registerFormSteps = new RegisterFormSteps(page);
-    });
-    test.beforeEach(async ({
-        page
-    }) => {
-        
+        apiContext = await request.newContext();
         await registerFormSteps.openMainPage();
+        createdUser = await registerFormSteps.sucessfulRegistration();
+
+        const authResponse = await apiContext.post('/api/auth/signin', {
+            data: {
+                email: createdUser.email,
+                password: createdUser.password
+            }
+        });
+        expect(authResponse.ok()).toBeTruthy();
     });
 
-    test.afterAll(async () => {
-        //await page.close();
-       // await browser.close();
+    test('intercept profile request', async () => {
+        await page.route('**/api/users/profile', async (route) => {
+            const response = await route.fetch();
+            const json = await response.json();
+
+            json.data.name = newData.name;
+            json.data.lastName = newData.lastName;
+            await route.fulfill({
+                response,
+                json
+            });
+        });
+        await page.locator('.btn.btn-white.btn-sidebar.sidebar_btn.-profile').click();
+        await expect(page).toHaveURL('panel/profile');
+        await expect(page.locator('.profile_name.display-4')).toHaveText(`${newData.name} ${newData.lastName}`);
     });
-
-
-    test('should register a new user', async ({
-        page
-    }) => {
-        await registerFormSteps.sucessfulRegistration();
-    });
-
-    test('Try to create a user with empty name', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithEmptyName();
-    });
-
-    test('Try to create a user with less that 2 chacter in name', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithLessThan2CharactersName();
-    });
-
-    test('Try to create a user with empty last name', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithEmptyLastName();
-    });
-
-    test('Try to create a user with less that 2 chacters in last name', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithLessThat2ChactersInLastName();
-    });
-
-
-    test('Try to create a user with invalid email', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithInvalidEmail();
-    });
-
-    test('Try to create a user with empty email', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithEmptyEmail();
+    test('create a new car via API', async () => {
+        const response = await apiContext.post('/api/cars', {
+            data: randomCarObj,
+        });
+        const responseBody = await response.json();
+        expect(responseBody.data.mileage).toBe(randomCarObj.mileage);
+        expect(response.ok()).toBeTruthy();
     })
 
-    test('Try to create a user with empty password', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithEmptyPassword();
+    test('create a new car via API with missed car brand ID', async () => {
+        const response = await apiContext.post('/api/cars', {
+            data: randomInvalidCar,
+        });
+        utils.validateStatusCode(response, 400);
     })
-
-    test('Try to create a user with invalid password', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithInvalidPassword();
+    test('create a new car via API with invalid mileage', async () => {
+        const response = await apiContext.post('/api/cars', {
+            data: randomCarWithInvalidMileage,
+        });
+        utils.validateStatusCode(response, 400);
     })
-
-    test('Try to create a user with empty confirmation password', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithEmptyConfirmationPassword();
-    })
-
-    test('Try to create a user with invalid confirmation password', async ({
-        page
-    }) => {
-        await registerFormSteps.createUserWithInvalidConfirmationPassword();
-    })
-})
+});
