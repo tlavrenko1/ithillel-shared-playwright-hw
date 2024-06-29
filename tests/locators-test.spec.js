@@ -12,10 +12,10 @@ import {
 import {
     carData
 } from '../fixtures/carData';
-
 import {
     utils
-} from '../Steps/api-utils';
+} from '../steps/api-utils';
+
 const newData = {
     name: 'MyTest',
     lastName: 'IsWorking',
