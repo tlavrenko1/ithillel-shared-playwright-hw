@@ -16,6 +16,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Display Docker run variables
+      run: |
+          echo "BASE_URL=${env.BASE_URL}"
+          echo "HTTP_CREDENTIALS_USERNAME=${HTTP_CREDENTIALS_USERNAME}"
+          echo "HTTP_CREDENTIALS_PASSWORD=${HTTP_CREDENTIALS_PASSWORD}"
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
@@ -32,11 +38,6 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: lavrenkot/playwright-build-tests:latest
-    - name: Display Docker run variables
-      run: |
-          echo "BASE_URL=${BASE_URL}"
-          echo "HTTP_CREDENTIALS_USERNAME=${HTTP_CREDENTIALS_USERNAME}"
-          echo "HTTP_CREDENTIALS_PASSWORD=${HTTP_CREDENTIALS_PASSWORD}"
 
     - name: Run Playwright tests in Docker
       run: |
