@@ -18,7 +18,7 @@ jobs:
 
     - name: Display Docker run variables
       run: |
-          echo "BASE_URL=${env.BASE_URL}"
+          echo "BASE_URL=${{vars.BASE_URL}}"
           echo "HTTP_CREDENTIALS_USERNAME=${HTTP_CREDENTIALS_USERNAME}"
           echo "HTTP_CREDENTIALS_PASSWORD=${HTTP_CREDENTIALS_PASSWORD}"
 
